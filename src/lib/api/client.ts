@@ -1,5 +1,4 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+import { env } from "../config/env";
 
 export type ApiErrorBody = {
   error_code?: string;
@@ -25,6 +24,16 @@ type ApiFetchOptions = RequestInit & {
   json?: unknown;
 };
 
+async function readJsonBody<T>(response: Response): Promise<T> {
+  const contentType = response.headers.get("content-type");
+
+  if (!contentType?.includes("application/json")) {
+    return undefined as T;
+  }
+
+  return response.json() as Promise<T>;
+}
+
 export async function apiFetch<T>(
   path: string,
   options: ApiFetchOptions = {},
@@ -38,7 +47,7 @@ export async function apiFetch<T>(
     body = JSON.stringify(options.json);
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await fetch(`${env.API_BASE_URL}${path}`, {
     ...options,
     body,
     headers,
@@ -49,7 +58,7 @@ export async function apiFetch<T>(
     let errorBody: ApiErrorBody | undefined;
 
     try {
-      errorBody = await response.json();
+      errorBody = await readJsonBody<ApiErrorBody>(response);
     } catch {
       errorBody = undefined;
     }
@@ -61,5 +70,5 @@ export async function apiFetch<T>(
     return undefined as T;
   }
 
-  return response.json() as Promise<T>;
+  return readJsonBody<T>(response);
 }
