@@ -21,11 +21,17 @@ export function useSessionsQuery() {
   });
 }
 
-export function useSessionQuery(sessionId?: string) {
+export function useSessionQuery(
+  sessionId?: string,
+  options?: {
+    refetchInterval?: number | false;
+  },
+) {
   return useQuery({
     queryKey: queryKeys.sessions.detail(sessionId ?? ""),
     queryFn: () => getSession(sessionId!),
     enabled: Boolean(sessionId),
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 

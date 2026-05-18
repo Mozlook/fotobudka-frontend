@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router";
 import { Button, Modal, Spinner } from "../components/ui";
 import { AccessResultModal } from "../features/sessions/components/AccessResultModal";
 import { SessionStatusBadge } from "../features/sessions/components/SessionStatusBadge";
+import { SourcePhotoUploader } from "../features/uploads/components/SourcePhotoUploader";
 import {
   useRegenerateSessionAccessMutation,
   useSessionQuery,
@@ -18,7 +19,10 @@ import {
 export function SessionDetailPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
 
-  const sessionQuery = useSessionQuery(sessionId);
+  const sessionQuery = useSessionQuery(sessionId, {
+    refetchInterval: 3000,
+  });
+
   const regenerateAccessMutation = useRegenerateSessionAccessMutation(
     sessionId ?? "",
   );
@@ -82,6 +86,10 @@ export function SessionDetailPage() {
       value: stats?.total ?? "—",
     },
     {
+      label: "Pending",
+      value: stats?.pending_upload ?? "—",
+    },
+    {
       label: "Uploaded",
       value: stats?.uploaded ?? "—",
     },
@@ -98,7 +106,6 @@ export function SessionDetailPage() {
       value: stats?.failed ?? "—",
     },
   ];
-
   function handleRegenerateAccess() {
     regenerateAccessMutation.mutate(undefined, {
       onSuccess: (access) => {
@@ -208,7 +215,7 @@ export function SessionDetailPage() {
           </p>
         </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-5">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           {statItems.map((item) => (
             <div key={item.label} className="rounded-card bg-bg p-4">
               <p className="text-xs font-medium text-fg-soft">{item.label}</p>
@@ -219,22 +226,16 @@ export function SessionDetailPage() {
       </section>
 
       <section className="mt-8 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-card border border-border bg-surface p-6 shadow-card-sm">
-          <p className="text-sm font-semibold text-fg-soft">Następny etap</p>
-
-          <h2 className="mt-1 text-2xl font-semibold text-fg">
-            Upload zdjęć do selekcji
-          </h2>
-
-          <p className="mt-2 text-sm leading-6 text-fg-muted">
-            W FE-3 dodamy drag&drop, presign, upload bezpośrednio do storage
-            oraz progress per plik.
-          </p>
-
-          <Button className="mt-5" disabled>
-            Upload zdjęć — FE-3
-          </Button>
-        </div>
+        <SourcePhotoUploader
+          sessionId={session.id}
+          disabled={
+            session.status === "waiting_for_payment" ||
+            session.status === "editing" ||
+            session.status === "delivered" ||
+            session.status === "closed" ||
+            session.status === "archived"
+          }
+        />
 
         <div className="rounded-card border border-border bg-surface p-6 shadow-card-sm">
           <p className="text-sm font-semibold text-fg-soft">Dostęp klienta</p>
