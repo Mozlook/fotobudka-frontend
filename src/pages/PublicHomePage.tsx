@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { Button, EmptyState, Input } from "../components/ui";
+import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
 
 const featuredProfiles = [
   {
@@ -85,46 +86,8 @@ export function PublicHomePage() {
           </div>
         </div>
 
-        <div
-          id="client-access"
-          className="rounded-card border border-border bg-surface p-6 shadow-card"
-        >
-          <p className="text-sm font-semibold text-fg-soft">Wejście klienta</p>
-
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-fg">
-            Wpisz kod od fotografa
-          </h2>
-
-          <p className="mt-3 text-sm leading-6 text-fg-muted">
-            Kod znajdziesz w wiadomości od fotografa. W kolejnym etapie ten
-            formularz podepniemy pod endpoint wejścia klienta po kodzie.
-          </p>
-
-          <div className="mt-6 grid gap-4">
-            <Input
-              label="Kod sesji"
-              placeholder="AB12-CD34"
-              autoComplete="off"
-              inputMode="text"
-            />
-
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleClientCodeSubmit}
-            >
-              Wejdź do sesji
-            </Button>
-          </div>
-
-          <div className="mt-6 rounded-card border border-main/20 bg-main-subtle p-4">
-            <p className="text-sm font-semibold text-fg">Masz link do sesji?</p>
-
-            <p className="mt-1 text-sm leading-6 text-fg-muted">
-              Linki w formacie <span className="font-medium">/s/token</span>{" "}
-              podłączymy w FE-4 razem z wejściem klienta po kodzie i CAPTCHA.
-            </p>
-          </div>
+        <div id="client-access">
+          <ClientAccessCard />
         </div>
       </section>
 

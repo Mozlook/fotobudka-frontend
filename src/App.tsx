@@ -7,6 +7,9 @@ import { PortfolioPage } from "./pages/PortfolioPage";
 import { PublicHomePage } from "./pages/PublicHomePage";
 import { SessionsPage } from "./pages/SessionsPage";
 import { SessionDetailPage } from "./pages/SessionDetailPage";
+import { ClientEntryPage } from "./pages/ClientEntryPage";
+import { ClientSessionPage } from "./pages/ClientSessionPage";
+import { ClientTokenAccessPage } from "./pages/ClientTokenAccessPage";
 
 function NotFoundPage() {
   return (
@@ -47,6 +50,13 @@ export function App() {
     <Routes>
       <Route path="/" element={<PublicHomePage />} />
       <Route path="/login" element={<LoginPage />} />
+
+      <Route path="/client" element={<ClientEntryPage />} />
+      <Route
+        path="/client/session/:sessionId"
+        element={<ClientSessionPage />}
+      />
+      <Route path="/s/:token" element={<ClientTokenAccessPage />} />
 
       <Route element={<RequireAuth />}>
         <Route path="/app" element={<AppShell />}>

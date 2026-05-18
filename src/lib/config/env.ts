@@ -3,4 +3,5 @@ const rawApiBaseUrl =
 
 export const env = {
   API_BASE_URL: rawApiBaseUrl.replace(/\/$/, ""),
+  RECAPTCHA_SITE_KEY: import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? "",
 };
