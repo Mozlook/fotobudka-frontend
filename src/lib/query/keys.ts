@@ -3,6 +3,7 @@ export const queryKeys = {
 
   sessions: {
     all: ["sessions"] as const,
+    list: () => ["sessions", "list"] as const,
     detail: (sessionId: string) => ["sessions", sessionId] as const,
   },
 

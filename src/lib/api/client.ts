@@ -24,14 +24,54 @@ type ApiFetchOptions = RequestInit & {
   json?: unknown;
 };
 
-async function readJsonBody<T>(response: Response): Promise<T> {
-  const contentType = response.headers.get("content-type");
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
-  if (!contentType?.includes("application/json")) {
+async function readBody<T>(response: Response): Promise<T> {
+  const text = await response.text();
+
+  if (!text.trim()) {
     return undefined as T;
   }
 
-  return response.json() as Promise<T>;
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return text as T;
+  }
+}
+
+async function readErrorBody(
+  response: Response,
+): Promise<ApiErrorBody | undefined> {
+  const text = await response.text();
+
+  if (!text.trim()) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(text);
+
+    if (isRecord(parsed)) {
+      return {
+        error_code:
+          typeof parsed.error_code === "string" ? parsed.error_code : undefined,
+        message:
+          typeof parsed.message === "string" ? parsed.message : undefined,
+        details: parsed.details,
+      };
+    }
+
+    return {
+      message: text,
+    };
+  } catch {
+    return {
+      message: text,
+    };
+  }
 }
 
 export async function apiFetch<T>(
@@ -58,7 +98,7 @@ export async function apiFetch<T>(
     let errorBody: ApiErrorBody | undefined;
 
     try {
-      errorBody = await readJsonBody<ApiErrorBody>(response);
+      errorBody = await readErrorBody(response);
     } catch {
       errorBody = undefined;
     }
@@ -70,5 +110,5 @@ export async function apiFetch<T>(
     return undefined as T;
   }
 
-  return readJsonBody<T>(response);
+  return readBody<T>(response);
 }

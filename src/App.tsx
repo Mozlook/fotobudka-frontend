@@ -6,6 +6,7 @@ import { AppShell } from "./layouts/AppShell";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { PublicHomePage } from "./pages/PublicHomePage";
 import { SessionsPage } from "./pages/SessionsPage";
+import { SessionDetailPage } from "./pages/SessionDetailPage";
 
 function NotFoundPage() {
   return (
@@ -51,6 +52,7 @@ export function App() {
         <Route path="/app" element={<AppShell />}>
           <Route index element={<Navigate to="/app/sessions" replace />} />
           <Route path="sessions" element={<SessionsPage />} />
+          <Route path="sessions/:sessionId" element={<SessionDetailPage />} />
           <Route path="portfolio" element={<PortfolioPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
