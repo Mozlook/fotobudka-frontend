@@ -7,6 +7,7 @@ import {
   getSession,
   listSessions,
   regenerateSessionAccess,
+  closeSession,
 } from "./api";
 import type {
   CreateSessionInput,
@@ -105,6 +106,31 @@ export function useRegenerateSessionAccessMutation(sessionId: string) {
 
     onError: (error) => {
       toastApiError(error, "Nie udało się zregenerować dostępu.");
+    },
+  });
+}
+
+export function useCloseSessionMutation(sessionId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => closeSession(sessionId),
+
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.sessions.detail(sessionId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.sessions.all,
+        }),
+      ]);
+
+      toast.success("Sesja została zamknięta.");
+    },
+
+    onError: (error) => {
+      toastApiError(error, "Nie udało się zamknąć sesji.");
     },
   });
 }

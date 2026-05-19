@@ -366,3 +366,12 @@ export async function regenerateSessionAccess(sessionId: string) {
 
   return normalizeAccess(response);
 }
+
+export function closeSession(sessionId: string) {
+  return apiFetch<void>(
+    `/api/sessions/${encodeURIComponent(sessionId)}/close`,
+    {
+      method: "POST",
+    },
+  );
+}
