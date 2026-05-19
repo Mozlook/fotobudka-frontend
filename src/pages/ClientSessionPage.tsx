@@ -1,9 +1,14 @@
+import { useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, EmptyState } from "../components/ui";
+import { EmptyState } from "../components/ui";
+import { ClientSelectionView } from "../features/client-selection/components/CLientSelectionView";
+import {
+  readClientSession,
+  storeClientSession,
+} from "../features/client-access/storage";
 import type { ClientSessionAccessResult } from "../features/client-access/types";
 import { queryKeys } from "../lib/query/keys";
-import { formatMoney } from "../features/sessions/utils";
 
 type LocationState = {
   session?: ClientSessionAccessResult;
@@ -22,7 +27,19 @@ export function ClientSessionPage() {
       )
     : undefined;
 
-  const session = cachedSession ?? stateSession;
+  const storedSession = sessionId ? readClientSession(sessionId) : null;
+
+  const session = cachedSession ?? stateSession ?? storedSession;
+
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+
+    queryClient.setQueryData(queryKeys.client.session(session.id), session);
+
+    storeClientSession(session);
+  }, [queryClient, session]);
 
   return (
     <main className="min-h-screen bg-bg text-fg">
@@ -41,61 +58,26 @@ export function ClientSessionPage() {
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-6 py-10">
-        <div className="rounded-card border border-border bg-surface p-6 shadow-card">
-          <p className="text-sm font-semibold text-fg-soft">Sesja klienta</p>
+      <section className="px-6 py-10">
+        {!sessionId || !session ? (
+          <div className="mx-auto max-w-3xl">
+            <EmptyState
+              title="Nie udało się odczytać sesji"
+              description="Wejdź ponownie przez kod albo link od fotografa. Dostęp klienta działa po bezpiecznym cookie, ale metadane widoku mogły zniknąć po wyczyszczeniu danych przeglądarki."
+            />
 
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-fg">
-            {session?.title ?? "Sesja zdjęciowa"}
-          </h1>
-
-          <p className="mt-3 text-sm leading-6 text-fg-muted">
-            Dostęp został potwierdzony. W kolejnym etapie dodamy grid proofów,
-            wybór zdjęć, notatki i zatwierdzanie wyboru.
-          </p>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-4">
-            <div className="rounded-card bg-bg p-4">
-              <p className="text-xs font-medium text-fg-soft">Status</p>
-              <p className="mt-1 font-semibold text-fg">
-                {session?.status ?? "—"}
-              </p>
-            </div>
-
-            <div className="rounded-card bg-bg p-4">
-              <p className="text-xs font-medium text-fg-soft">Pakiet</p>
-              <p className="mt-1 font-semibold text-fg">
-                {session ? `${session.included_count} zdjęć` : "—"}
-              </p>
-            </div>
-
-            <div className="rounded-card bg-bg p-4">
-              <p className="text-xs font-medium text-fg-soft">Cena bazowa</p>
-              <p className="mt-1 font-semibold text-fg">
-                {session
-                  ? formatMoney(session.base_price_cents, session.currency)
-                  : "—"}
-              </p>
-            </div>
-
-            <div className="rounded-card bg-bg p-4">
-              <p className="text-xs font-medium text-fg-soft">Dodatkowe</p>
-              <p className="mt-1 font-semibold text-fg">
-                {session
-                  ? formatMoney(session.extra_price_cents, session.currency)
-                  : "—"}
-              </p>
+            <div className="mt-6 text-center">
+              <Link
+                to="/client"
+                className="inline-flex h-10 items-center justify-center rounded-button bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover"
+              >
+                Wpisz kod sesji
+              </Link>
             </div>
           </div>
-        </div>
-
-        <div className="mt-8">
-          <EmptyState
-            title="Grid proofów będzie w FE-5"
-            description="Backend ma już endpoint zdjęć klienta, signed thumb/proof URL-e, selections, notes i submit. Teraz mamy gotowe wejście klienta kodem albo linkiem."
-            action={<Button disabled>Przegląd zdjęć — następny etap</Button>}
-          />
-        </div>
+        ) : (
+          <ClientSelectionView session={session} />
+        )}
       </section>
     </main>
   );

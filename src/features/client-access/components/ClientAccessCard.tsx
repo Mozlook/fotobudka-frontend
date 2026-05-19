@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -13,6 +13,7 @@ import type {
   ClientAccessByCodeInput,
   ClientSessionAccessResult,
 } from "../types";
+import { storeClientSession } from "../storage";
 
 export function ClientAccessCard() {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ export function ClientAccessCard() {
 
     onSuccess: (session) => {
       queryClient.setQueryData(queryKeys.client.session(session.id), session);
+
+      storeClientSession(session);
 
       toast.success("Dostęp do sesji przyznany.");
 

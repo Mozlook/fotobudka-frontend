@@ -9,8 +9,13 @@ export const queryKeys = {
 
   client: {
     session: (sessionId: string) => ["client-session", sessionId] as const,
+
     photos: (sessionId: string) =>
       ["client-session", sessionId, "photos"] as const,
+
+    proofUrl: (photoId: string) =>
+      ["client-photo", photoId, "proof-url"] as const,
+
     download: (sessionId: string) =>
       ["client-session", sessionId, "download"] as const,
   },

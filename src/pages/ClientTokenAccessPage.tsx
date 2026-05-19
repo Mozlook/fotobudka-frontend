@@ -5,6 +5,7 @@ import { Button, Spinner } from "../components/ui";
 import { toastApiError } from "../lib/notifications/apiToast";
 import { queryKeys } from "../lib/query/keys";
 import { accessClientSessionByToken } from "../features/client-access/api";
+import { storeClientSession } from "../features/client-access/storage";
 
 export function ClientTokenAccessPage() {
   const { token } = useParams<{ token: string }>();
@@ -25,6 +26,7 @@ export function ClientTokenAccessPage() {
       .then((session) => {
         queryClient.setQueryData(queryKeys.client.session(session.id), session);
 
+        storeClientSession(session);
         navigate(`/client/session/${session.id}`, {
           replace: true,
           state: {
