@@ -10,6 +10,7 @@ import { SessionDetailPage } from "./pages/SessionDetailPage";
 import { ClientEntryPage } from "./pages/ClientEntryPage";
 import { ClientSessionPage } from "./pages/ClientSessionPage";
 import { ClientTokenAccessPage } from "./pages/ClientTokenAccessPage";
+import { ClientDownloadPage } from "./pages/ClientDownloadPage";
 
 function NotFoundPage() {
   return (
@@ -55,6 +56,10 @@ export function App() {
       <Route
         path="/client/session/:sessionId"
         element={<ClientSessionPage />}
+      />
+      <Route
+        path="/client/session/:sessionId/download"
+        element={<ClientDownloadPage />}
       />
       <Route path="/s/:token" element={<ClientTokenAccessPage />} />
 

@@ -38,7 +38,12 @@ export function ClientAccessCard() {
 
       toast.success("Dostęp do sesji przyznany.");
 
-      navigate(`/client/session/${session.id}`, {
+      const targetPath =
+        session.status === "delivered"
+          ? `/client/session/${session.id}/download`
+          : `/client/session/${session.id}`;
+
+      navigate(targetPath, {
         replace: true,
         state: {
           session,

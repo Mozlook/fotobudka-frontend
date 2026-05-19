@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "../components/ui";
-import { ClientSelectionView } from "../features/client-selection/components/CLientSelectionView";
 import { ClientDeliveryView } from "../features/client-delivery/components/ClientDeliveryView";
 import {
   readClientSession,
@@ -15,7 +13,7 @@ type LocationState = {
   session?: ClientSessionAccessResult;
 };
 
-export function ClientSessionPage() {
+export function ClientDownloadPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -29,18 +27,12 @@ export function ClientSessionPage() {
     : undefined;
 
   const storedSession = sessionId ? readClientSession(sessionId) : null;
-
   const session = cachedSession ?? stateSession ?? storedSession;
 
-  useEffect(() => {
-    if (!session) {
-      return;
-    }
-
+  if (session) {
     queryClient.setQueryData(queryKeys.client.session(session.id), session);
-
     storeClientSession(session);
-  }, [queryClient, session]);
+  }
 
   return (
     <main className="min-h-screen bg-bg text-fg">
@@ -60,11 +52,11 @@ export function ClientSessionPage() {
       </header>
 
       <section className="px-6 py-10">
-        {!sessionId || !session ? (
+        {!sessionId ? (
           <div className="mx-auto max-w-3xl">
             <EmptyState
-              title="Nie udało się odczytać sesji"
-              description="Wejdź ponownie przez kod albo link od fotografa. Dostęp klienta działa po bezpiecznym cookie, ale metadane widoku mogły zniknąć po wyczyszczeniu danych przeglądarki."
+              title="Brak identyfikatora sesji"
+              description="Wejdź ponownie przez kod albo link od fotografa."
             />
 
             <div className="mt-6 text-center">
@@ -76,13 +68,11 @@ export function ClientSessionPage() {
               </Link>
             </div>
           </div>
-        ) : session.status === "delivered" ? (
-          <ClientDeliveryView
-            sessionId={session.id}
-            sessionTitle={session.title}
-          />
         ) : (
-          <ClientSelectionView session={session} />
+          <ClientDeliveryView
+            sessionId={sessionId}
+            sessionTitle={session?.title}
+          />
         )}
       </section>
     </main>

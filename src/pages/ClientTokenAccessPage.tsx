@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, Spinner } from "../components/ui";
+import { Spinner } from "../components/ui";
 import { toastApiError } from "../lib/notifications/apiToast";
 import { queryKeys } from "../lib/query/keys";
 import { accessClientSessionByToken } from "../features/client-access/api";
@@ -27,7 +27,12 @@ export function ClientTokenAccessPage() {
         queryClient.setQueryData(queryKeys.client.session(session.id), session);
 
         storeClientSession(session);
-        navigate(`/client/session/${session.id}`, {
+        const targetPath =
+          session.status === "delivered"
+            ? `/client/session/${session.id}/download`
+            : `/client/session/${session.id}`;
+
+        navigate(targetPath, {
           replace: true,
           state: {
             session,
