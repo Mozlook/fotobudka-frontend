@@ -4,6 +4,7 @@ import { Button, Modal, Spinner } from "../components/ui";
 import { AccessResultModal } from "../features/sessions/components/AccessResultModal";
 import { SessionStatusBadge } from "../features/sessions/components/SessionStatusBadge";
 import { SourcePhotoUploader } from "../features/uploads/components/SourcePhotoUploader";
+import { PhotographerSelectionPanel } from "../features/photographer-selection/components/PhotographerSelectionPanel";
 import {
   useRegenerateSessionAccessMutation,
   useSessionQuery,
@@ -224,6 +225,16 @@ export function SessionDetailPage() {
           ))}
         </div>
       </section>
+
+      <div className="mt-8">
+        <PhotographerSelectionPanel
+          sessionId={session.id}
+          currency={session.currency}
+          includedCount={session.included_count}
+          extraPriceCents={session.extra_price_cents}
+          basePriceCents={session.base_price_cents}
+        />
+      </div>
 
       <section className="mt-8 grid gap-4 lg:grid-cols-2">
         <SourcePhotoUploader
