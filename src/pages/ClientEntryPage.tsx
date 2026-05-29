@@ -1,26 +1,161 @@
 import { Link } from "react-router";
 import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
 
+const clientSteps = [
+  {
+    title: "Wpisz kod od fotografa",
+    description:
+      "Kod znajdziesz w wiadomości od fotografa. Jeśli masz link, możesz otworzyć go bezpośrednio.",
+  },
+  {
+    title: "Wybierz zdjęcia",
+    description:
+      "Po wejściu do sesji zobaczysz proofy, wybierzesz zdjęcia do obróbki i dopiszesz notatki.",
+  },
+  {
+    title: "Pobierz gotowy ZIP",
+    description:
+      "Gdy fotograf przygotuje finalne zdjęcia, wrócisz tutaj po jedną paczkę ZIP.",
+  },
+];
+
+function ClientStepsSection() {
+  return (
+    <section
+      aria-labelledby="client-steps-title"
+      className="rounded-card border border-border bg-surface p-6 shadow-card-sm"
+    >
+      <p className="text-sm font-semibold text-fg-soft">Jak to działa</p>
+
+      <h2
+        id="client-steps-title"
+        className="mt-2 text-2xl font-semibold tracking-tight text-fg"
+      >
+        Wejście klienta krok po kroku
+      </h2>
+
+      <div className="mt-6 grid gap-4">
+        {clientSteps.map((step, index) => (
+          <article
+            key={step.title}
+            className="flex gap-4 rounded-card bg-bg p-4"
+          >
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-main-soft text-sm font-bold text-main-active">
+              {index + 1}
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-fg">{step.title}</h3>
+
+              <p className="mt-1 text-sm leading-6 text-fg-muted">
+                {step.description}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HelpCard() {
+  return (
+    <section className="rounded-card border border-main/20 bg-main-subtle p-5">
+      <p className="text-sm font-semibold text-fg">Nie masz kodu?</p>
+
+      <p className="mt-2 text-sm leading-6 text-fg-muted">
+        Skontaktuj się z fotografem. FotoBudka nie wyszukuje prywatnych sesji
+        bez kodu albo linku, bo dostęp klienta jest ograniczony do konkretnej
+        sesji.
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          to="/"
+          className="inline-flex h-10 items-center justify-center rounded-button border border-border bg-surface px-4 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
+        >
+          Strona główna
+        </Link>
+
+        <Link
+          to="/login"
+          className="inline-flex h-10 items-center justify-center rounded-button bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
+        >
+          Panel fotografa
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 export function ClientEntryPage() {
   return (
-    <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-          <Link to="/" className="font-bold text-fg">
-            FotoBudka
+    <main id="client-entry-content" className="min-h-screen bg-bg text-fg">
+      <a
+        href="#client-access-card"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-button focus:bg-secondary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-secondary-foreground"
+      >
+        Przejdź do formularza kodu
+      </a>
+
+      <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
+              <span className="text-sm font-bold">FB</span>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold leading-none text-fg">
+                FotoBudka
+              </p>
+              <p className="mt-1 text-xs text-fg-muted">Wejście klienta</p>
+            </div>
           </Link>
 
-          <Link
-            to="/login"
-            className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted"
-          >
-            Panel fotografa
-          </Link>
+          <nav aria-label="Nawigacja klienta" className="flex flex-wrap gap-2">
+            <Link
+              to="/"
+              className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
+            >
+              Strona główna
+            </Link>
+
+            <Link
+              to="/login"
+              className="rounded-button bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
+            >
+              Panel fotografa
+            </Link>
+          </nav>
         </div>
       </header>
 
-      <section className="mx-auto grid min-h-[calc(100vh-73px)] max-w-5xl items-center px-6 py-10">
-        <ClientAccessCard />
+      <section className="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-[1fr_440px] lg:py-14">
+        <div className="order-2 flex flex-col justify-center lg:order-1">
+          <div className="inline-flex w-fit rounded-full bg-main-soft px-3 py-1 text-sm font-semibold text-fg">
+            Klient bez konta
+          </div>
+
+          <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight text-fg md:text-5xl">
+            Wpisz kod sesji i przejdź do wyboru zdjęć.
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-base leading-8 text-fg-muted">
+            FotoBudka pozwala klientom wejść do prywatnej sesji przez kod albo
+            link od fotografa. Po wejściu zobaczysz proofy, wybierzesz zdjęcia i
+            pobierzesz gotową paczkę ZIP, gdy fotograf zakończy obróbkę.
+          </p>
+
+          <div className="mt-8 grid gap-4">
+            <ClientStepsSection />
+            <HelpCard />
+          </div>
+        </div>
+
+        <div id="client-access-card" className="order-1 lg:order-2">
+          <ClientAccessCard />
+        </div>
       </section>
     </main>
   );
