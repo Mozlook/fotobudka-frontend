@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "../components/ui";
@@ -27,46 +28,78 @@ export function ClientDownloadPage() {
     : undefined;
 
   const storedSession = sessionId ? readClientSession(sessionId) : null;
+
   const session = cachedSession ?? stateSession ?? storedSession;
 
-  if (session) {
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+
     queryClient.setQueryData(queryKeys.client.session(session.id), session);
     storeClientSession(session);
-  }
+  }, [queryClient, session]);
 
   return (
     <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-          <Link to="/" className="font-bold text-fg">
-            FotoBudka
+      <a
+        href="#client-download-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-button focus:bg-secondary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-secondary-foreground"
+      >
+        Przejdź do pobierania ZIP
+      </a>
+
+      <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
+              <span className="text-sm font-bold">FB</span>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold leading-none text-fg">
+                FotoBudka
+              </p>
+              <p className="mt-1 text-xs text-fg-muted">Pobieranie zdjęć</p>
+            </div>
           </Link>
 
-          <Link
-            to="/client"
-            className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted"
+          <nav
+            aria-label="Nawigacja pobierania"
+            className="flex flex-wrap gap-2"
           >
-            Mam inny kod
-          </Link>
+            <Link
+              to="/client"
+              className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
+            >
+              Mam inny kod
+            </Link>
+
+            <Link
+              to="/"
+              className="rounded-button bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
+            >
+              Strona główna
+            </Link>
+          </nav>
         </div>
       </header>
 
-      <section className="px-6 py-10">
+      <section id="client-download-content" className="px-6 py-10">
         {!sessionId ? (
           <div className="mx-auto max-w-3xl">
             <EmptyState
               title="Brak identyfikatora sesji"
               description="Wejdź ponownie przez kod albo link od fotografa."
+              action={
+                <Link
+                  to="/client"
+                  className="inline-flex h-10 items-center justify-center rounded-button bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover"
+                >
+                  Wpisz kod sesji
+                </Link>
+              }
             />
-
-            <div className="mt-6 text-center">
-              <Link
-                to="/client"
-                className="inline-flex h-10 items-center justify-center rounded-button bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover"
-              >
-                Wpisz kod sesji
-              </Link>
-            </div>
           </div>
         ) : (
           <ClientDeliveryView
