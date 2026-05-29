@@ -19,4 +19,17 @@ export const queryKeys = {
     download: (sessionId: string) =>
       ["client-session", sessionId, "download"] as const,
   },
+
+  portfolio: {
+    all: ["portfolio"] as const,
+    galleries: () => ["portfolio", "galleries"] as const,
+    gallery: (galleryId: string) =>
+      ["portfolio", "galleries", galleryId] as const,
+
+    publicProfile: (username: string) =>
+      ["portfolio", "public-profile", username] as const,
+
+    publicGallery: (username: string, slug: string) =>
+      ["portfolio", "public-gallery", username, slug] as const,
+  },
 };

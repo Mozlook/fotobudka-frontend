@@ -11,6 +11,9 @@ import { ClientEntryPage } from "./pages/ClientEntryPage";
 import { ClientSessionPage } from "./pages/ClientSessionPage";
 import { ClientTokenAccessPage } from "./pages/ClientTokenAccessPage";
 import { ClientDownloadPage } from "./pages/ClientDownloadPage";
+import { GalleryDetailPage } from "./pages/GalleryDetailPage";
+import { PublicGalleryPage } from "./pages/PublicGalleryPage";
+import { PublicPhotographerPage } from "./pages/PublicPhotographerPage";
 
 function NotFoundPage() {
   return (
@@ -69,9 +72,13 @@ export function App() {
           <Route path="sessions" element={<SessionsPage />} />
           <Route path="sessions/:sessionId" element={<SessionDetailPage />} />
           <Route path="portfolio" element={<PortfolioPage />} />
+          <Route path="portfolio/:galleryId" element={<GalleryDetailPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Route>
+
+      <Route path="/:username/:gallerySlug" element={<PublicGalleryPage />} />
+      <Route path="/:username" element={<PublicPhotographerPage />} />
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
