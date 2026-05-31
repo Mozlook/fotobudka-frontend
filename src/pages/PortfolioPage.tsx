@@ -348,7 +348,6 @@ export function PortfolioPage() {
             placeholder="Tytuł albo slug galerii"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            hint="Filtrowanie działa lokalnie na aktualnie pobranej liście."
           />
 
           <div className="text-sm text-fg-muted lg:text-right">
@@ -356,14 +355,14 @@ export function PortfolioPage() {
               <span>Odświeżam dane...</span>
             ) : (
               <span>
-                Pokazuję{" "}
+                Pokazuję
                 <span className="font-semibold text-fg">
                   {filteredGalleries.length}
-                </span>{" "}
-                z{" "}
+                </span>
+                z
                 <span className="font-semibold text-fg">
                   {galleries.length}
-                </span>{" "}
+                </span>
                 galerii
               </span>
             )}

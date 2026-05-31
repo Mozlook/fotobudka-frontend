@@ -1,4 +1,4 @@
-import { type FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -9,11 +9,11 @@ import { env } from "../../../lib/config/env";
 import { toastApiError } from "../../../lib/notifications/apiToast";
 import { queryKeys } from "../../../lib/query/keys";
 import { accessClientSessionByCode } from "../api";
+import { storeClientSession } from "../storage";
 import type {
   ClientAccessByCodeInput,
   ClientSessionAccessResult,
 } from "../types";
-import { storeClientSession } from "../storage";
 
 export function ClientAccessCard() {
   const navigate = useNavigate();
@@ -106,8 +106,8 @@ export function ClientAccessCard() {
       </h2>
 
       <p className="mt-3 text-sm leading-6 text-fg-muted">
-        Kod znajdziesz w wiadomości od fotografa. Po poprawnym kodzie backend
-        ustawi bezpieczne cookie klienta i przeniesiemy Cię do sesji.
+        Kod znajdziesz w wiadomości od fotografa. Jeśli kod zaginął, wygasł albo
+        nie działa, poproś fotografa o wygenerowanie nowego dostępu.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
@@ -125,8 +125,8 @@ export function ClientAccessCard() {
             <p className="font-semibold text-warning">Wymagana CAPTCHA</p>
 
             <p className="mt-1 text-sm leading-6 text-warning/80">
-              Po kilku błędnych próbach backend wymaga dodatkowego
-              potwierdzenia.
+              Po kilku błędnych próbach prosimy o dodatkowe potwierdzenie, że
+              kod wpisuje prawdziwa osoba.
             </p>
 
             {env.RECAPTCHA_SITE_KEY ? (
@@ -144,10 +144,10 @@ export function ClientAccessCard() {
               </div>
             ) : (
               <div className="mt-4 rounded-card border border-danger/20 bg-danger-soft p-4 text-danger">
-                <p className="font-semibold">Brak site key</p>
+                <p className="font-semibold">CAPTCHA nie jest skonfigurowana</p>
+
                 <p className="mt-1 text-sm opacity-80">
-                  Dodaj `VITE_RECAPTCHA_SITE_KEY` w `.env.local` i zrestartuj
-                  frontend.
+                  Spróbuj ponownie później albo skontaktuj się z fotografem.
                 </p>
               </div>
             )}
@@ -167,8 +167,8 @@ export function ClientAccessCard() {
         <p className="text-sm font-semibold text-fg">Masz link do sesji?</p>
 
         <p className="mt-1 text-sm leading-6 text-fg-muted">
-          Link od fotografa otworzy się automatycznie przez ścieżkę `/s/...`,
-          bez wpisywania kodu.
+          Otwórz link z wiadomości od fotografa. Wtedy nie musisz przepisywać
+          kodu ręcznie.
         </p>
       </div>
     </section>

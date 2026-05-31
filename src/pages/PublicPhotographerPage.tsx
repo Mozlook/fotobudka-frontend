@@ -352,11 +352,6 @@ export function PublicPhotographerPage() {
                   <h2 className="mt-1 text-3xl font-bold tracking-tight text-fg">
                     Publiczne galerie
                   </h2>
-
-                  <p className="mt-3 max-w-2xl text-sm leading-6 text-fg-muted">
-                    Przeglądaj wybrane galerie portfolio fotografa. Zdjęcia w
-                    tej sekcji są publikowane bez watermarków.
-                  </p>
                 </div>
 
                 {galleries.length > 0 ? (

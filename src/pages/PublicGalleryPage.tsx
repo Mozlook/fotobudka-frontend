@@ -242,11 +242,6 @@ export function PublicGalleryPage() {
                     /{galleryQuery.data.profile.username}/
                     {galleryQuery.data.gallery.slug}
                   </p>
-
-                  <p className="mt-5 max-w-3xl text-sm leading-6 text-fg-muted">
-                    Publiczna galeria portfolio. Zdjęcia są publikowane bez
-                    watermarków.
-                  </p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">

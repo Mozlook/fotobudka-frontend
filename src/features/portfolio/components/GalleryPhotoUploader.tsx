@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "../../../components/ui";
@@ -261,8 +261,8 @@ export function GalleryPhotoUploader({ galleryId }: GalleryPhotoUploaderProps) {
             Zdjęcia portfolio
           </h2>
           <p className="mt-2 text-sm leading-6 text-fg-muted">
-            Wybierz JPG/PNG. Pliki idą bezpośrednio do storage przez presigned
-            URL, a backend zapisuje zdjęcie w galerii po `complete`.
+            Wybierz zdjęcia JPG lub PNG. Po wysłaniu pojawią się w publicznej
+            galerii portfolio.
           </p>
         </div>
 
@@ -307,7 +307,7 @@ export function GalleryPhotoUploader({ galleryId }: GalleryPhotoUploaderProps) {
           Kliknij, żeby wybrać zdjęcia
         </p>
         <p className="mt-2 text-sm text-fg-muted">
-          Zdjęcia portfolio są publiczne i bez watermarków.
+          Możesz wybrać kilka zdjęć naraz.
         </p>
       </div>
 

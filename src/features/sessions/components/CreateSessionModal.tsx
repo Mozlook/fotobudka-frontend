@@ -168,7 +168,7 @@ export function CreateSessionModal({
             onChange={(event) =>
               updateField("client_email", event.target.value)
             }
-            hint="Opcjonalnie. Mailer podepniemy później."
+            hint="Opcjonalnie. Email pomoże Ci rozpoznać klienta w panelu. Kod i link pokażemy po utworzeniu sesji."
             containerClassName="md:col-span-2"
           />
 
@@ -223,8 +223,9 @@ export function CreateSessionModal({
               Tryb płatności: manual
             </p>
             <p className="mt-1 text-sm leading-6 text-fg-muted">
-              W MVP fotograf ręcznie oznacza płatność jako opłaconą po
-              zatwierdzeniu wyboru przez klienta.
+              Aktualnie dostępna jest płatność manualna poza FotoBudką. Po
+              opłaceniu sesji oznaczysz płatność ręcznie w panelu. Płatności
+              online zostaną dodane w przyszłości.
             </p>
           </div>
         </div>

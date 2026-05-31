@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { type ChangeEvent, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button, EmptyState, Modal, Spinner } from "../../../components/ui";
@@ -126,7 +126,7 @@ function FinalPhotoCard({
         isUploaded ? "border-success/30" : "border-border",
       )}
     >
-      <div className="aspect-[4/3] overflow-hidden rounded-card bg-bg-muted">
+      <div className="aspect-4/3 overflow-hidden rounded-card bg-bg-muted">
         {photo.thumb_url ? (
           <img
             src={photo.thumb_url}
@@ -272,15 +272,20 @@ export function FinalDeliveryPanel({
     photoId: string,
     patch: Partial<FinalUploadState>,
   ) {
-    setUploadStates((current) => ({
-      ...current,
-      [photoId]: {
-        status: current[photoId]?.status ?? "idle",
-        progress: current[photoId]?.progress ?? 0,
-        ...current[photoId],
-        ...patch,
-      },
-    }));
+    setUploadStates((current) => {
+      const previous: FinalUploadState = current[photoId] ?? {
+        status: "idle",
+        progress: 0,
+      };
+
+      return {
+        ...current,
+        [photoId]: {
+          ...previous,
+          ...patch,
+        },
+      };
+    });
   }
 
   async function handleFinalFileSelected(
@@ -391,15 +396,13 @@ export function FinalDeliveryPanel({
           <p className="text-sm font-semibold text-fg-soft">
             Finale i dostawa ZIP
           </p>
-
           <h2 className="mt-1 text-2xl font-semibold text-fg">
             Upload finalnych zdjęć
           </h2>
-
           <p className="mt-2 max-w-2xl text-sm leading-6 text-fg-muted">
-            Wgraj gotowy plik pod każde zdjęcie wybrane przez klienta. Gdy
-            wszystkie wybrane zdjęcia mają final, możesz wygenerować
-            wersjonowaną paczkę ZIP.
+            Wgraj gotowe zdjęcie pod każdy kadr wybrany przez klienta. Gdy
+            wszystkie finalne zdjęcia będą dodane, przygotujesz paczkę ZIP do
+            pobrania.
           </p>
         </div>
 
@@ -434,11 +437,13 @@ export function FinalDeliveryPanel({
 
       {!canUploadFinals ? (
         <div className="mt-6 rounded-card border border-warning/20 bg-warning-soft p-4 text-warning">
-          <p className="font-semibold">Upload finali niedostępny</p>
+          <p className="font-semibold">
+            Finalne zdjęcia nie są jeszcze dostępne
+          </p>
           <p className="mt-1 text-sm leading-6 opacity-80">
-            Finale można wgrywać po oznaczeniu płatności jako opłaconej, gdy
-            sesja jest w statusie editing. Dla kolejnych wersji paczki backend
-            dopuszcza także status delivered.
+            Finalne zdjęcia możesz wgrywać po potwierdzeniu płatności. Po
+            dostarczeniu paczki nadal możesz przygotować kolejną wersję, jeśli
+            klient potrzebuje poprawek.
           </p>
         </div>
       ) : null}
@@ -554,9 +559,9 @@ export function FinalDeliveryPanel({
 
       {allFinalsUploaded ? (
         <div className="mt-6 rounded-card border border-success/20 bg-success-soft p-4 text-success">
-          <p className="font-semibold">Wszystkie finale są gotowe</p>
+          <p className="font-semibold">Wszystkie finalne zdjęcia są dodane</p>
           <p className="mt-1 text-sm leading-6 opacity-80">
-            Możesz wygenerować paczkę ZIP. Worker utworzy nową wersję dostawy.
+            Możesz przygotować paczkę ZIP dla klienta.
           </p>
         </div>
       ) : null}
@@ -593,9 +598,10 @@ export function FinalDeliveryPanel({
           </div>
 
           <div className="rounded-card border border-warning/20 bg-warning-soft p-4 text-warning">
-            <p className="font-semibold">Wersjonowanie</p>
+            <p className="font-semibold">Kolejne wersje</p>
             <p className="mt-1 text-sm leading-6 opacity-80">
-              Każde kliknięcie tworzy kolejną wersję ZIP-a, np. v1, v2, v3.
+              Jeśli po poprawkach przygotujesz nową paczkę, klient zobaczy
+              najnowszą wersję.
             </p>
           </div>
         </div>
@@ -605,7 +611,7 @@ export function FinalDeliveryPanel({
         open={closeConfirmOpen}
         onOpenChange={setCloseConfirmOpen}
         title="Zamknąć sesję?"
-        description="Zamknięcie sesji ustawia retencję. Po czasie cleanup usunie dane zgodnie z backendową polityką retencji."
+        description="Zamknij sesję dopiero wtedy, gdy klient odebrał gotowe zdjęcia i nie planujesz kolejnych poprawek."
         footer={
           <>
             <Button

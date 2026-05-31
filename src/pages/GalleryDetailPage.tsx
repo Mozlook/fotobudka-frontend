@@ -68,7 +68,7 @@ function GalleryPhotoCard({
         target="_blank"
         rel="noreferrer"
         className={cn(
-          "group block aspect-[4/3] bg-bg",
+          "group block aspect-4/3 bg-bg",
           !hasImage && "pointer-events-none",
         )}
         aria-label={hasImage ? "Otwórz zdjęcie w nowej karcie" : undefined}
@@ -279,8 +279,8 @@ export function GalleryDetailPage() {
             </p>
 
             <p className="mt-3 max-w-3xl text-sm leading-6 text-fg-muted">
-              Zarządzaj zdjęciami publicznej galerii portfolio. Zdjęcia w tej
-              sekcji są publikowane bez watermarków.
+              Dodawaj, przeglądaj i usuwaj zdjęcia widoczne w tej publicznej
+              galerii.
             </p>
 
             {publicUrl ? (
@@ -334,9 +334,9 @@ export function GalleryDetailPage() {
         />
 
         <MetricCard
-          label="Pending"
+          label="W trakcie"
           value={stats.pending}
-          description="Zdjęcia bez gotowego signed URL w odpowiedzi."
+          description="Zdjęcia, które nie są jeszcze gotowe do publicznego podglądu."
           tone="warning"
         />
       </section>
@@ -355,8 +355,7 @@ export function GalleryDetailPage() {
             </h2>
 
             <p className="mt-2 max-w-3xl text-sm leading-6 text-fg-muted">
-              To zdjęcia, które pojawią się w publicznej galerii. Usunięcie
-              zdjęcia usuwa je z portfolio, ale nie wpływa na sesje klientów.
+              Te zdjęcia są widoczne dla osób odwiedzających publiczną galerię.
             </p>
           </div>
 

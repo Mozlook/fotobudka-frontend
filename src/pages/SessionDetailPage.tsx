@@ -96,7 +96,39 @@ function SectionCard({
   );
 }
 
-function isSourceUploadDisabled(status: string) {
+function InfoPanel({
+  title,
+  description,
+  tone = "main",
+}: {
+  title: string;
+  description: string;
+  tone?: "main" | "warning" | "success";
+}) {
+  const toneClassName = {
+    main: "border-main/20 bg-main-subtle text-fg",
+    warning: "border-warning/20 bg-warning-soft text-warning",
+    success: "border-success/20 bg-success-soft text-success",
+  }[tone];
+
+  return (
+    <div className={cn("rounded-card border p-4", toneClassName)}>
+      <p className="font-semibold">{title}</p>
+      <p className="mt-1 text-sm leading-6 opacity-80">{description}</p>
+    </div>
+  );
+}
+
+function canManageSourcePhotos(status: string) {
+  return (
+    status === "draft" ||
+    status === "processing" ||
+    status === "selecting" ||
+    status === "failed"
+  );
+}
+
+function shouldShowSelectionReview(status: string) {
   return (
     status === "waiting_for_payment" ||
     status === "editing" ||
@@ -104,6 +136,10 @@ function isSourceUploadDisabled(status: string) {
     status === "closed" ||
     status === "archived"
   );
+}
+
+function shouldShowFinalDelivery(status: string) {
+  return status === "editing" || status === "delivered";
 }
 
 export function SessionDetailPage() {
@@ -173,43 +209,46 @@ export function SessionDetailPage() {
   const session = sessionQuery.data;
   const stats = getSessionPhotoStats(session);
   const statusMeta = getSessionStatusMeta(session.status);
-  const sourceUploadDisabled = isSourceUploadDisabled(session.status);
+
+  const showSourceStage = canManageSourcePhotos(session.status);
+  const showSelectionStage = shouldShowSelectionReview(session.status);
+  const showFinalStage = shouldShowFinalDelivery(session.status);
 
   const statItems = [
     {
       label: "Wszystkie",
       value: stats?.total ?? "—",
-      description: "Wszystkie zdjęcia source w sesji.",
+      description: "Wszystkie zdjęcia dodane do sesji.",
       tone: "default" as const,
     },
     {
-      label: "Pending",
+      label: "Czekają",
       value: stats?.pending_upload ?? "—",
-      description: "Czekają na complete uploadu.",
+      description: "Pliki dodane do kolejki uploadu.",
       tone: "warning" as const,
     },
     {
-      label: "Uploaded",
+      label: "Wgrane",
       value: stats?.uploaded ?? "—",
-      description: "Upload zakończony, przed workerem.",
+      description: "Zdjęcia czekające na przygotowanie proofów.",
       tone: "main" as const,
     },
     {
-      label: "Processing",
+      label: "W przygotowaniu",
       value: stats?.processing ?? "—",
-      description: "Worker generuje thumb/proof.",
+      description: "Trwa przygotowanie miniaturek i proofów.",
       tone: "main" as const,
     },
     {
-      label: "Ready",
+      label: "Gotowe",
       value: stats?.ready ?? "—",
-      description: "Gotowe do pokazania klientowi.",
+      description: "Widoczne dla klienta w wyborze zdjęć.",
       tone: "success" as const,
     },
     {
-      label: "Failed",
+      label: "Błędy",
       value: stats?.failed ?? "—",
-      description: "Wymagają uwagi fotografa.",
+      description: "Zdjęcia, których nie udało się przygotować.",
       tone: stats?.failed ? ("danger" as const) : ("default" as const),
     },
   ];
@@ -315,68 +354,135 @@ export function SessionDetailPage() {
         <MetricCard
           label="Minimum wyboru"
           value={session.min_select_count}
-          description="Minimalna liczba zdjęć do submitu."
+          description="Minimalna liczba zdjęć do zatwierdzenia przez klienta."
         />
       </section>
 
-      <div className="mt-8">
-        <SourcePhotoUploader
-          sessionId={session.id}
-          disabled={sourceUploadDisabled}
-        />
-      </div>
-
-      <div className="mt-8">
-        <SectionCard
-          eyebrow="Processing"
-          title="Status przetwarzania zdjęć do selekcji"
-          description="Ten widok odświeża się automatycznie. Po zakończeniu workera zdjęcia ready pojawią się klientowi w selekcji."
-          action={
-            sessionQuery.isFetching ? (
-              <div className="flex items-center gap-2 rounded-button bg-bg px-3 py-2 text-sm font-semibold text-fg-muted">
-                <Spinner size="sm" />
-                Odświeżam
-              </div>
-            ) : null
-          }
-        >
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {statItems.map((item) => (
-              <MetricCard
-                key={item.label}
-                label={item.label}
-                value={item.value}
-                description={item.description}
-                tone={item.tone}
-              />
-            ))}
+      {showSourceStage ? (
+        <>
+          <div className="mt-8">
+            <SourcePhotoUploader sessionId={session.id} />
           </div>
-        </SectionCard>
-      </div>
 
-      <div className="mt-8">
-        <PhotographerSelectionPanel
-          sessionId={session.id}
-          currency={session.currency}
-          includedCount={session.included_count}
-          extraPriceCents={session.extra_price_cents}
-          basePriceCents={session.base_price_cents}
-        />
-      </div>
+          <div className="mt-8">
+            <SectionCard
+              eyebrow="Zdjęcia do selekcji"
+              title="Postęp przygotowania zdjęć"
+              description="Po wgraniu zdjęć system przygotowuje miniatury i proofy dla klienta. Gdy zdjęcia będą gotowe, klient będzie mógł je zobaczyć i wybrać."
+              action={
+                sessionQuery.isFetching ? (
+                  <div className="flex items-center gap-2 rounded-button bg-bg px-3 py-2 text-sm font-semibold text-fg-muted">
+                    <Spinner size="sm" />
+                    Odświeżam
+                  </div>
+                ) : null
+              }
+            >
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                {statItems.map((item) => (
+                  <MetricCard
+                    key={item.label}
+                    label={item.label}
+                    value={item.value}
+                    description={item.description}
+                    tone={item.tone}
+                  />
+                ))}
+              </div>
 
-      <div className="mt-8">
-        <FinalDeliveryPanel
-          sessionId={session.id}
-          sessionStatus={session.status}
-          latestDelivery={session.latest_delivery ?? null}
-        />
-      </div>
+              {session.status === "selecting" ? (
+                <div className="mt-6">
+                  <InfoPanel
+                    title="Klient może już wybierać zdjęcia"
+                    description="Możesz nadal dodać zdjęcia do sesji, ale pamiętaj, że klient zobaczy je dopiero po przygotowaniu proofów."
+                    tone="success"
+                  />
+                </div>
+              ) : null}
+            </SectionCard>
+          </div>
+        </>
+      ) : null}
+
+      {!showSourceStage && stats ? (
+        <div className="mt-8">
+          <SectionCard
+            eyebrow="Zdjęcia do selekcji"
+            title="Zdjęcia zostały przygotowane"
+            description="Ten etap jest już zakończony dla tej sesji. Poniżej zobaczysz wybór klienta i dalsze kroki."
+          >
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+              {statItems.map((item) => (
+                <MetricCard
+                  key={item.label}
+                  label={item.label}
+                  value={item.value}
+                  description={item.description}
+                  tone={item.tone}
+                />
+              ))}
+            </div>
+          </SectionCard>
+        </div>
+      ) : null}
+
+      {session.status === "selecting" ? (
+        <div className="mt-8">
+          <InfoPanel
+            title="Czekamy na wybór klienta"
+            description="Gdy klient zatwierdzi zdjęcia, w tym miejscu pojawi się lista zdjęć do obróbki, notatki oraz podsumowanie płatności."
+            tone="main"
+          />
+        </div>
+      ) : null}
+
+      {session.status === "waiting_for_payment" ? (
+        <div className="mt-8">
+          <InfoPanel
+            title="Klient zatwierdził wybór"
+            description="Sprawdź wybrane zdjęcia i notatki. Po otrzymaniu płatności oznacz ją jako opłaconą, żeby przejść do uploadu finalnych zdjęć."
+            tone="warning"
+          />
+        </div>
+      ) : null}
+
+      {showSelectionStage ? (
+        <div className="mt-8">
+          <PhotographerSelectionPanel
+            sessionId={session.id}
+            currency={session.currency}
+            includedCount={session.included_count}
+            extraPriceCents={session.extra_price_cents}
+            basePriceCents={session.base_price_cents}
+          />
+        </div>
+      ) : null}
+
+      {showFinalStage ? (
+        <div className="mt-8">
+          <FinalDeliveryPanel
+            sessionId={session.id}
+            sessionStatus={session.status}
+            latestDelivery={session.latest_delivery ?? null}
+          />
+        </div>
+      ) : null}
+
+      {session.status === "waiting_for_payment" ? (
+        <div className="mt-8">
+          <InfoPanel
+            title="Finalne zdjęcia będą dostępne po płatności"
+            description="Po oznaczeniu płatności jako opłaconej pojawi się sekcja uploadu finalnych zdjęć i generowania paczki ZIP."
+            tone="main"
+          />
+        </div>
+      ) : null}
 
       <Modal
         open={confirmRegenerateOpen}
         onOpenChange={setConfirmRegenerateOpen}
         title="Regenerować dostęp klienta?"
-        description="Nowy kod i link unieważnią poprzednie dane dostępu. Klient korzystający ze starego linku lub kodu straci dostęp."
+        description="Nowy kod i link unieważnią poprzedni dostęp. Klient korzystający ze starego linku albo kodu nie wejdzie już do tej sesji."
         footer={
           <>
             <Button

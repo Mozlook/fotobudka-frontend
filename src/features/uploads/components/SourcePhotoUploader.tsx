@@ -436,9 +436,8 @@ export function SourcePhotoUploader({
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-fg-muted">
-            Wybierz pliki JPG/PNG. Front pobierze presigned URL-e z backendu,
-            wyśle pliki bezpośrednio do storage, a potem potwierdzi upload przez
-            endpoint complete.
+            Wybierz pliki JPG/PNG. Po wysłaniu zdjęć system przygotuje miniatury
+            i podglądy dla klienta.
           </p>
         </div>
 
@@ -519,18 +518,14 @@ export function SourcePhotoUploader({
             <path d="M20 16.5v1A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-1" />
           </svg>
         </div>
-
         <h3 className="mt-4 text-lg font-semibold text-fg">
           Przeciągnij zdjęcia tutaj
         </h3>
-
         <p className="mt-2 text-sm text-fg-muted">
           albo kliknij, żeby wybrać pliki z dysku.
         </p>
-
         <p className="mt-3 text-xs text-fg-soft">
-          Upload idzie partiami po {PRESIGN_BATCH_SIZE} plików, maksymalnie{" "}
-          {MAX_CONCURRENT_UPLOADS} równolegle.
+          Możesz dodać wiele zdjęć naraz. Postęp uploadu zobaczysz poniżej.
         </p>
       </div>
 

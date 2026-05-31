@@ -152,7 +152,7 @@ function PhotoCard({
     >
       <button
         type="button"
-        className="group relative block aspect-[4/3] w-full overflow-hidden bg-bg text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
+        className="group relative block aspect-4/3 w-full overflow-hidden bg-bg text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
         onClick={onOpen}
         aria-label={`Otwórz podgląd zdjęcia ${photo.original_filename}`}
       >
@@ -643,7 +643,7 @@ export function ClientSelectionView({ session }: ClientSelectionViewProps) {
         open={submitModalOpen}
         onOpenChange={setSubmitModalOpen}
         title="Zatwierdzić wybór?"
-        description="Po zatwierdzeniu wybór zostanie zablokowany, a fotograf przejdzie do rozliczenia płatności manualnej."
+        description="Po zatwierdzeniu fotograf otrzyma listę wybranych zdjęć i notatki. Wybór zostanie zablokowany, żeby można było przejść do dalszej realizacji."
         footer={
           <>
             <Button
@@ -675,7 +675,7 @@ export function ClientSelectionView({ session }: ClientSelectionViewProps) {
           </div>
 
           <div className="rounded-card border border-main/20 bg-main-subtle p-4">
-            <p className="text-sm text-fg-muted">Szacowana kwota</p>
+            <p className="text-sm text-fg-muted">Kwota za wybrane zdjęcia</p>
             <p className="mt-1 text-3xl font-bold text-fg">
               {formatMoney(estimatedAmountCents, session.currency)}
             </p>
@@ -718,11 +718,11 @@ export function ClientSelectionView({ session }: ClientSelectionViewProps) {
             </div>
           ) : (
             <div className="rounded-card border border-warning/20 bg-warning-soft p-4 text-warning">
-              <p className="font-semibold">Po zatwierdzeniu</p>
+              <p className="font-semibold">Po zatwierdzeniu wyboru</p>
+
               <p className="mt-1 text-sm leading-6 opacity-80">
-                Nie będzie można zmieniać wyboru ani notatek. Backend
-                zweryfikuje minimalną liczbę wyboru i zapisze snapshot kwoty
-                płatności.
+                Nie będzie można zmieniać wybranych zdjęć ani notatek. Fotograf
+                otrzyma Twój wybór i przejdzie do dalszej realizacji sesji.
               </p>
             </div>
           )}

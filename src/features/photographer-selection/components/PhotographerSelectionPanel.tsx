@@ -22,7 +22,7 @@ function SelectedPhotoRow({
 }) {
   return (
     <article className="grid gap-4 rounded-card border border-border bg-bg p-4 md:grid-cols-[120px_1fr_auto]">
-      <div className="aspect-[4/3] overflow-hidden rounded-card bg-bg-muted">
+      <div className="aspect-4/3 overflow-hidden rounded-card bg-bg-muted">
         {photo.thumb_url ? (
           <img
             src={photo.thumb_url}
@@ -127,9 +127,8 @@ export function PhotographerSelectionPanel({
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-fg-muted">
-            Po submitcie klienta sesja przechodzi na waiting_for_payment.
-            Fotograf sprawdza wybór, notatki i oznacza płatność jako opłaconą,
-            żeby przejść do etapu obróbki.
+            Klient zatwierdził zdjęcia do obróbki. Sprawdź wybrane kadry,
+            notatki i podsumowanie płatności.
           </p>
         </div>
 
@@ -164,9 +163,7 @@ export function PhotographerSelectionPanel({
       {selectionQuery.isError ? (
         <div className="mt-6 rounded-card border border-danger/20 bg-danger-soft p-5 text-danger">
           <p className="font-semibold">Nie udało się pobrać wyboru klienta</p>
-          <p className="mt-1 text-sm opacity-80">
-            Sprawdź backend albo spróbuj odświeżyć widok.
-          </p>
+          <p className="mt-1 text-sm opacity-80">Spróbuj odświeżyć widok.</p>
 
           <Button
             className="mt-4"
@@ -214,20 +211,21 @@ export function PhotographerSelectionPanel({
 
           {canMarkPaid ? (
             <div className="mt-6 rounded-card border border-warning/20 bg-warning-soft p-4 text-warning">
-              <p className="font-semibold">Oczekiwanie na płatność manualną</p>
+              <p className="font-semibold">Oczekiwanie na płatność</p>
               <p className="mt-1 text-sm leading-6 opacity-80">
-                Po potwierdzeniu płatności sesja przejdzie na status editing, a
-                klient zobaczy etap obróbki.
+                Po otrzymaniu płatności oznacz ją jako opłaconą. Wtedy będzie
+                można wgrać finalne zdjęcia dla klienta.
               </p>
             </div>
           ) : null}
 
           {alreadyPaid ? (
             <div className="mt-6 rounded-card border border-success/20 bg-success-soft p-4 text-success">
-              <p className="font-semibold">Płatność oznaczona jako opłacona</p>
+              <p className="font-semibold">Płatność została potwierdzona</p>
               <p className="mt-1 text-sm leading-6 opacity-80">
-                Sesja może przejść do uploadu finalnych zdjęć.
-              </p>
+                Możesz wgrać finalne zdjęcia i przygotować paczkę ZIP dla
+                klienta.
+              </p>{" "}
             </div>
           ) : null}
 
@@ -263,8 +261,8 @@ export function PhotographerSelectionPanel({
       <Modal
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Oznaczyć płatność jako opłaconą?"
-        description="Ta akcja przestawi sesję z waiting_for_payment na editing. Klient nie będzie mógł już zmieniać wyboru."
+        title="Potwierdzić płatność?"
+        description="Potwierdź tylko wtedy, gdy płatność została przyjęta poza FotoBudką. Po tej akcji będzie można wgrać finalne zdjęcia."
         footer={
           <>
             <Button
@@ -301,7 +299,8 @@ export function PhotographerSelectionPanel({
           <div className="rounded-card border border-warning/20 bg-warning-soft p-4 text-warning">
             <p className="font-semibold">Po potwierdzeniu</p>
             <p className="mt-1 text-sm leading-6 opacity-80">
-              Backend ustawi payment.status=paid i sessions.status=editing.
+              Wybór klienta pozostanie zablokowany, a Ty przejdziesz do etapu
+              przygotowania finalnych zdjęć.
             </p>
           </div>
         </div>

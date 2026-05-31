@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
 import { PublicHeader } from "../components/layout/PublicHeader";
+import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
 
 const clientSteps = [
   {
@@ -59,36 +59,6 @@ function ClientStepsSection() {
   );
 }
 
-function HelpCard() {
-  return (
-    <section className="rounded-card border border-main/20 bg-main-subtle p-5">
-      <p className="text-sm font-semibold text-fg">Nie masz kodu?</p>
-
-      <p className="mt-2 text-sm leading-6 text-fg-muted">
-        Skontaktuj się z fotografem. FotoBudka nie wyszukuje prywatnych sesji
-        bez kodu albo linku, bo dostęp klienta jest ograniczony do konkretnej
-        sesji.
-      </p>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link
-          to="/"
-          className="inline-flex h-10 items-center justify-center rounded-button border border-border bg-surface px-4 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-        >
-          Strona główna
-        </Link>
-
-        <Link
-          to="/login"
-          className="inline-flex h-10 items-center justify-center rounded-button bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
-        >
-          Panel fotografa
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 export function ClientEntryPage() {
   return (
     <main id="client-entry-content" className="min-h-screen bg-bg text-fg">
@@ -114,6 +84,7 @@ export function ClientEntryPage() {
           },
         ]}
       />
+
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-[1fr_440px] lg:py-14">
         <div className="order-2 flex flex-col justify-center lg:order-1">
           <div className="inline-flex w-fit rounded-full bg-main-soft px-3 py-1 text-sm font-semibold text-fg">
@@ -130,9 +101,8 @@ export function ClientEntryPage() {
             pobierzesz gotową paczkę ZIP, gdy fotograf zakończy obróbkę.
           </p>
 
-          <div className="mt-8 grid gap-4">
+          <div className="mt-8">
             <ClientStepsSection />
-            <HelpCard />
           </div>
         </div>
 
