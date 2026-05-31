@@ -1,8 +1,8 @@
-import { type FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { toast } from "sonner";
-import { Button, Input } from "../components/ui";
+import { Link } from "react-router";
+import { Button, EmptyState, Spinner } from "../components/ui";
 import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
+import { useFeaturedPublicGalleriesQuery } from "../features/portfolio/hooks";
+import type { FeaturedPublicGallery } from "../features/portfolio/types";
 
 const howItWorksSteps = [
   {
@@ -28,98 +28,127 @@ const photographerFeatures = [
   "Upload finali, generowanie ZIP i publiczne portfolio",
 ];
 
-function normalizeUsername(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/^@/, "")
-    .replace(/^\/+/, "")
-    .split("/")[0];
+function FeaturedGalleryCard({ gallery }: { gallery: FeaturedPublicGallery }) {
+  const photographerName =
+    gallery.photographer.display_name || gallery.photographer.username;
+
+  return (
+    <Link
+      to={`/${gallery.photographer.username}/${gallery.slug}`}
+      className="group overflow-hidden rounded-card border border-border bg-surface shadow-card-sm transition hover:-translate-y-0.5 hover:shadow-card focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
+    >
+      <div className="aspect-4/3 bg-bg">
+        {gallery.cover_url ? (
+          <img
+            src={gallery.cover_url}
+            alt={gallery.title}
+            className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-main-subtle px-4 text-center text-sm font-semibold text-main-active">
+            Brak okładki
+          </div>
+        )}
+      </div>
+
+      <div className="p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-success-soft px-2.5 py-1 text-xs font-semibold text-success">
+            Publiczna
+          </span>
+
+          <span className="rounded-full bg-bg-muted px-2.5 py-1 text-xs font-semibold text-fg-muted">
+            {gallery.photo_count} zdjęć
+          </span>
+        </div>
+
+        <h3 className="mt-3 line-clamp-2 text-xl font-semibold text-fg">
+          {gallery.title}
+        </h3>
+
+        <p className="mt-1 truncate text-sm text-fg-muted">
+          {photographerName}
+        </p>
+
+        <p className="mt-4 text-sm font-semibold text-main-active">
+          Otwórz galerię →
+        </p>
+      </div>
+    </Link>
+  );
 }
 
-function isValidUsername(value: string) {
-  return /^[a-z0-9](?:[a-z0-9-]{0,30}[a-z0-9])?$/.test(value);
-}
-
-function PortfolioLookupCard() {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const normalizedUsername = normalizeUsername(username);
-
-    if (!normalizedUsername) {
-      toast.error("Wpisz username fotografa.");
-      return;
-    }
-
-    if (!isValidUsername(normalizedUsername)) {
-      toast.error("Username może zawierać małe litery, cyfry i myślniki.");
-      return;
-    }
-
-    navigate(`/${normalizedUsername}`);
-  }
+function FeaturedGalleriesSection() {
+  const featuredQuery = useFeaturedPublicGalleriesQuery(4);
 
   return (
     <section
-      id="portfolio-lookup"
-      aria-labelledby="portfolio-lookup-title"
-      className="rounded-card border border-border bg-surface p-6 shadow-card"
+      id="featured-galleries"
+      aria-labelledby="featured-galleries-title"
+      className="mx-auto max-w-7xl px-6 pb-12"
     >
-      <div>
-        <p className="text-sm font-semibold text-fg-soft">
-          Portfolio fotografa
-        </p>
+      <div className="rounded-card border border-border bg-surface p-6 shadow-card">
+        <div className="max-w-3xl">
+          <p className="text-sm font-semibold text-fg-soft">
+            Publiczne galerie
+          </p>
 
-        <h2
-          id="portfolio-lookup-title"
-          className="mt-2 text-3xl font-bold tracking-tight text-fg"
-        >
-          Otwórz publiczne galerie
-        </h2>
-
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-fg-muted">
-          Wpisz username fotografa, żeby przejść do jego publicznego profilu i
-          galerii portfolio.
-        </p>
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="mt-6 grid gap-4 md:grid-cols-[1fr_auto]"
-      >
-        <Input
-          label="Username fotografa"
-          placeholder="np. ziutson"
-          value={username}
-          autoComplete="off"
-          inputMode="text"
-          onChange={(event) => setUsername(event.target.value)}
-          hint="Username znajdziesz w linku od fotografa, np. /ziutson."
-        />
-
-        <div className="flex items-end">
-          <Button
-            type="submit"
-            variant="secondary"
-            className="w-full md:w-auto"
+          <h2
+            id="featured-galleries-title"
+            className="mt-2 text-3xl font-bold tracking-tight text-fg"
           >
-            Otwórz portfolio
-          </Button>
+            Wyróżnione galerie fotografów
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-fg-muted">
+            Zobacz wybrane publiczne galerie opublikowane przez fotografów w
+            FotoBudce.
+          </p>
         </div>
-      </form>
 
-      <div className="mt-5 rounded-card border border-main/20 bg-main-subtle p-4">
-        <p className="text-sm font-semibold text-fg">Masz pełny link?</p>
+        <div className="mt-6">
+          {featuredQuery.isLoading ? (
+            <div className="rounded-card border border-border bg-bg p-5">
+              <div className="flex items-center gap-3">
+                <Spinner />
+                <p className="text-sm text-fg-muted">
+                  Ładuję wyróżnione galerie...
+                </p>
+              </div>
+            </div>
+          ) : null}
 
-        <p className="mt-1 text-sm leading-6 text-fg-muted">
-          Linki w formacie <span className="font-medium">/username</span> albo{" "}
-          <span className="font-medium">/username/galeria</span> możesz otworzyć
-          bezpośrednio w przeglądarce.
-        </p>
+          {featuredQuery.isError ? (
+            <EmptyState
+              title="Nie udało się pobrać galerii"
+              description="Spróbuj odświeżyć stronę albo wróć później."
+              action={
+                <Button
+                  variant="outline"
+                  onClick={() => featuredQuery.refetch()}
+                >
+                  Spróbuj ponownie
+                </Button>
+              }
+            />
+          ) : null}
+
+          {featuredQuery.isSuccess && featuredQuery.data.length === 0 ? (
+            <EmptyState
+              title="Brak publicznych galerii"
+              description="Gdy fotografowie opublikują portfolio, wybrane galerie pojawią się tutaj."
+            />
+          ) : null}
+
+          {featuredQuery.data && featuredQuery.data.length > 0 ? (
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              {featuredQuery.data.map((gallery) => (
+                <FeaturedGalleryCard key={gallery.id} gallery={gallery} />
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   );
@@ -259,10 +288,10 @@ export function PublicHomePage() {
             </a>
 
             <a
-              href="#portfolio-lookup"
+              href="#featured-galleries"
               className="rounded-button border border-border bg-surface px-3 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted"
             >
-              Portfolio
+              Galerie
             </a>
 
             <Link
@@ -300,10 +329,10 @@ export function PublicHomePage() {
             </a>
 
             <a
-              href="#portfolio-lookup"
+              href="#featured-galleries"
               className="rounded-button border border-border bg-surface px-5 py-3 text-sm font-semibold text-fg transition hover:bg-bg-muted"
             >
-              Otwórz portfolio
+              Zobacz galerie
             </a>
           </div>
 
@@ -318,9 +347,7 @@ export function PublicHomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-12">
-        <PortfolioLookupCard />
-      </section>
+      <FeaturedGalleriesSection />
 
       <HowItWorksSection />
 

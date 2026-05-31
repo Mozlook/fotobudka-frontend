@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { Button, EmptyState, Modal, Spinner } from "../components/ui";
 import { usePublicGalleryQuery } from "../features/portfolio/hooks";
@@ -43,24 +43,6 @@ function GalleryPhotoCard({
           </div>
         )}
       </button>
-
-      <div className="flex items-center justify-between gap-3 p-4">
-        <div>
-          <p className="text-sm font-semibold text-fg">Zdjęcie {index + 1}</p>
-
-          {photo.width > 0 && photo.height > 0 ? (
-            <p className="mt-1 text-xs text-fg-soft">
-              {photo.width} × {photo.height}
-            </p>
-          ) : (
-            <p className="mt-1 text-xs text-fg-soft">Brak wymiarów</p>
-          )}
-        </div>
-
-        <span className="rounded-full bg-bg-muted px-2.5 py-1 text-xs font-semibold text-fg-muted">
-          #{index + 1}
-        </span>
-      </div>
     </article>
   );
 }
@@ -146,6 +128,7 @@ function GalleryLightbox({
             <p className="font-semibold text-warning">
               Zdjęcie chwilowo niedostępne
             </p>
+
             <p className="mt-2 text-sm text-fg-muted">
               Link do zdjęcia mógł wygasnąć. Odśwież stronę i spróbuj ponownie.
             </p>
@@ -153,40 +136,6 @@ function GalleryLightbox({
         )}
       </div>
     </Modal>
-  );
-}
-function GalleryStats({
-  photosCount,
-  photographerName,
-}: {
-  photosCount: number;
-  photographerName: string;
-}) {
-  return (
-    <section
-      aria-label="Podsumowanie galerii"
-      className="mt-6 grid gap-4 md:grid-cols-2"
-    >
-      <article className="rounded-card border border-border bg-main-subtle p-5 shadow-card-sm">
-        <p className="text-sm font-medium text-fg-muted">Zdjęcia</p>
-        <p className="mt-2 text-3xl font-bold tracking-tight text-fg">
-          {photosCount}
-        </p>
-        <p className="mt-2 text-xs leading-5 text-fg-muted">
-          Liczba zdjęć dostępnych w tej publicznej galerii.
-        </p>
-      </article>
-
-      <article className="rounded-card border border-border bg-surface p-5 shadow-card-sm">
-        <p className="text-sm font-medium text-fg-muted">Fotograf</p>
-        <p className="mt-2 text-2xl font-bold tracking-tight text-fg">
-          {photographerName}
-        </p>
-        <p className="mt-2 text-xs leading-5 text-fg-muted">
-          Autor publicznego portfolio.
-        </p>
-      </article>
-    </section>
   );
 }
 
@@ -200,17 +149,16 @@ export function PublicGalleryPage() {
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
 
   const photos = galleryQuery.data?.photos ?? [];
-
-  const readyPhotos = useMemo(() => {
-    return photos.filter((photo) => Boolean(photo.image_url));
-  }, [photos]);
+  const galleryTitle = galleryQuery.data?.gallery.title ?? "Galeria";
 
   const photographerName =
     galleryQuery.data?.profile.display_name ||
     galleryQuery.data?.profile.username ||
     "Fotograf";
 
-  const galleryTitle = galleryQuery.data?.gallery.title ?? "Galeria";
+  const firstAvailablePhotoIndex = photos.findIndex((photo) =>
+    Boolean(photo.image_url),
+  );
 
   return (
     <main className="min-h-screen bg-bg text-fg">
@@ -291,7 +239,7 @@ export function PublicGalleryPage() {
                       to={`/${username}`}
                       className="inline-flex h-10 items-center justify-center rounded-button border border-border bg-surface px-4 text-sm font-semibold text-fg transition hover:bg-bg-muted"
                     >
-                      Profil fotografa
+                      Zobacz profil fotografa
                     </Link>
                   ) : null}
 
@@ -309,9 +257,9 @@ export function PublicGalleryPage() {
 
         {galleryQuery.data ? (
           <>
-            <section className="rounded-card border border-border bg-surface p-8 shadow-card">
-              <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">
-                <div>
+            <section className="rounded-card border border-border bg-surface p-6 shadow-card">
+              <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-fg-soft">
                     {photographerName}
                   </p>
@@ -325,93 +273,46 @@ export function PublicGalleryPage() {
                     {galleryQuery.data.gallery.slug}
                   </p>
 
-                  <p className="mt-5 max-w-3xl text-base leading-8 text-fg-muted">
-                    Publiczna galeria portfolio. Zdjęcia w tej sekcji są
-                    publikowane bez watermarków.
+                  <p className="mt-5 max-w-3xl text-sm leading-6 text-fg-muted">
+                    Publiczna galeria portfolio. Zdjęcia są publikowane bez
+                    watermarków.
                   </p>
-
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Link
-                      to={`/${galleryQuery.data.profile.username}`}
-                      className="inline-flex h-10 items-center justify-center rounded-button border border-border bg-surface px-4 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-                    >
-                      Wróć do profilu
-                    </Link>
-
-                    {readyPhotos.length > 0 ? (
-                      <Button
-                        variant="secondary"
-                        onClick={() => setActivePhotoIndex(0)}
-                      >
-                        Otwórz pierwsze zdjęcie
-                      </Button>
-                    ) : null}
-                  </div>
                 </div>
 
-                <aside className="rounded-card border border-border bg-bg p-5">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-fg-soft">
-                    Galeria
-                  </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    to={`/${galleryQuery.data.profile.username}`}
+                    className="inline-flex h-10 items-center justify-center rounded-button border border-border bg-surface px-4 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
+                  >
+                    Zobacz profil fotografa
+                  </Link>
 
-                  <div className="mt-4 grid gap-4">
-                    <div>
-                      <p className="text-sm text-fg-muted">Zdjęcia</p>
-                      <p className="mt-1 text-3xl font-bold text-fg">
-                        {photos.length}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-fg-muted">Fotograf</p>
-                      <p className="mt-1 text-lg font-bold text-fg">
-                        {photographerName}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 rounded-card border border-main/20 bg-main-subtle p-4">
-                    <p className="text-sm font-semibold text-fg">
-                      Masz kod sesji?
-                    </p>
-
-                    <p className="mt-1 text-sm leading-6 text-fg-muted">
-                      Przejdź do formularza wejścia klienta, jeśli fotograf
-                      wysłał Ci kod albo link do wyboru zdjęć.
-                    </p>
-
-                    <Link
-                      to="/client"
-                      className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-button bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover"
+                  {firstAvailablePhotoIndex >= 0 ? (
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        setActivePhotoIndex(firstAvailablePhotoIndex)
+                      }
                     >
-                      Wejdź kodem
-                    </Link>
-                  </div>
-                </aside>
+                      Otwórz pierwsze zdjęcie
+                    </Button>
+                  ) : null}
+                </div>
               </div>
             </section>
 
-            <GalleryStats
-              photosCount={photos.length}
-              photographerName={photographerName}
-            />
-
             <section className="mt-8">
-              <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                 <div>
                   <p className="text-sm font-semibold text-fg-soft">Zdjęcia</p>
 
-                  <h2 className="mt-1 text-3xl font-bold tracking-tight text-fg">
-                    Zawartość galerii
-                  </h2>
-
-                  <p className="mt-3 max-w-2xl text-sm leading-6 text-fg-muted">
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-fg-muted">
                     Kliknij zdjęcie, żeby otworzyć większy podgląd.
                   </p>
                 </div>
 
                 {photos.length > 0 ? (
-                  <p className="rounded-card border border-border bg-surface px-4 py-3 text-sm font-semibold text-fg-muted">
+                  <p className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg-muted">
                     {photos.length} zdjęć
                   </p>
                 ) : null}

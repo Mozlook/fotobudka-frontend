@@ -31,5 +31,7 @@ export const queryKeys = {
 
     publicGallery: (username: string, slug: string) =>
       ["portfolio", "public-gallery", username, slug] as const,
+    featuredGalleries: (limit: number) =>
+      ["portfolio", "featured-galleries", limit] as const,
   },
 };

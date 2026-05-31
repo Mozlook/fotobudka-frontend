@@ -61,3 +61,15 @@ export type PublicGalleryPageData = {
   gallery: Gallery;
   photos: GalleryPhoto[];
 };
+
+export type FeaturedPublicGallery = {
+  id: string;
+  title: string;
+  slug: string;
+  photo_count: number;
+  cover_url: string;
+  photographer: {
+    username: string;
+    display_name: string;
+  };
+};

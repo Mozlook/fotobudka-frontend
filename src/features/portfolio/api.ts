@@ -9,6 +9,7 @@ import type {
   PublicPhotographerPageData,
   PublicProfile,
   UpsertGalleryInput,
+  FeaturedPublicGallery,
 } from "./types";
 
 type AnyRecord = Record<string, unknown>;
@@ -78,6 +79,38 @@ function normalizeGallery(value: unknown): Gallery {
     photo_count: asNumber(pick(value, ["PhotoCount", "photo_count"])) ?? 0,
     cover_url: asString(pick(value, ["CoverURL", "cover_url"])),
     created_at: asString(pick(value, ["CreatedAt", "created_at"])),
+  };
+}
+
+function normalizeFeaturedPublicGallery(value: unknown): FeaturedPublicGallery {
+  if (!isRecord(value)) {
+    throw new Error("Backend zwrócił niepoprawny obiekt wyróżnionej galerii.");
+  }
+
+  const id = asString(pick(value, ["ID", "id"]));
+
+  if (!id) {
+    const fields = Object.keys(value).join(", ") || "brak pól";
+
+    throw new Error(
+      `Backend nie zwrócił ID wyróżnionej galerii. Pola odpowiedzi: ${fields}.`,
+    );
+  }
+
+  const photographerRaw = pick(value, ["Photographer", "photographer"]);
+  const photographer = isRecord(photographerRaw) ? photographerRaw : {};
+
+  return {
+    id,
+    title: asString(pick(value, ["Title", "title"])) ?? "Galeria bez tytułu",
+    slug: asString(pick(value, ["Slug", "slug"])) ?? "",
+    photo_count: asNumber(pick(value, ["PhotoCount", "photo_count"])) ?? 0,
+    cover_url: asString(pick(value, ["CoverURL", "cover_url"])) ?? "",
+    photographer: {
+      username: asString(pick(photographer, ["Username", "username"])) ?? "",
+      display_name:
+        asString(pick(photographer, ["DisplayName", "display_name"])) ?? "",
+    },
   };
 }
 
@@ -322,4 +355,18 @@ export async function getPublicGallery(
     gallery,
     photos,
   };
+}
+
+export async function getFeaturedPublicGalleries(limit = 4) {
+  const params = new URLSearchParams({
+    limit: String(limit),
+  });
+
+  const response = await apiFetch<unknown>(
+    `/api/public/galleries/featured?${params}`,
+  );
+
+  const items = extractArray(response, ["Galleries", "galleries"]);
+
+  return items.map(normalizeFeaturedPublicGallery);
 }

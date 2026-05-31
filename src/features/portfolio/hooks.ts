@@ -11,6 +11,7 @@ import {
   getPublicPhotographer,
   listGalleries,
   updateGallery,
+  getFeaturedPublicGalleries,
 } from "./api";
 import type { UpsertGalleryInput } from "./types";
 
@@ -132,5 +133,13 @@ export function usePublicGalleryQuery(username?: string, slug?: string) {
     queryKey: queryKeys.portfolio.publicGallery(username ?? "", slug ?? ""),
     queryFn: () => getPublicGallery(username!, slug!),
     enabled: Boolean(username) && Boolean(slug),
+  });
+}
+
+export function useFeaturedPublicGalleriesQuery(limit = 4) {
+  return useQuery({
+    queryKey: queryKeys.portfolio.featuredGalleries(limit),
+    queryFn: () => getFeaturedPublicGalleries(limit),
+    staleTime: 60_000,
   });
 }
