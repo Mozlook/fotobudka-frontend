@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "../components/ui";
 import { ClientSelectionView } from "../features/client-selection/components/CLientSelectionView";
 import { ClientDeliveryView } from "../features/client-delivery/components/ClientDeliveryView";
+import { PublicHeader } from "../components/layout/PublicHeader";
 import {
   readClientSession,
   storeClientSession,
@@ -44,20 +45,21 @@ export function ClientSessionPage() {
 
   return (
     <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-          <Link to="/" className="font-bold text-fg">
-            FotoBudka
-          </Link>
-
-          <Link
-            to="/client"
-            className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted"
-          >
-            Mam inny kod
-          </Link>
-        </div>
-      </header>
+      <PublicHeader
+        subtitle="Sesja klienta"
+        actions={[
+          {
+            label: "Mam inny kod",
+            to: "/client",
+            variant: "outline",
+          },
+          {
+            label: "Strona główna",
+            to: "/",
+            variant: "primary",
+          },
+        ]}
+      />
 
       <section className="px-6 py-10">
         {!sessionId || !session ? (

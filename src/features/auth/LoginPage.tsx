@@ -3,6 +3,7 @@ import { Button, Spinner } from "../../components/ui";
 import { ApiError } from "../../lib/api/client";
 import { getGoogleLoginUrl } from "./api";
 import { useMeProfileQuery } from "./hooks";
+import { PublicHeader } from "../../components/layout/PublicHeader";
 
 export function LoginPage() {
   const [searchParams] = useSearchParams();
@@ -25,29 +26,16 @@ export function LoginPage() {
 
   return (
     <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
-              <span className="text-sm font-bold">FB</span>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold leading-none text-fg">
-                FotoBudka
-              </p>
-              <p className="mt-1 text-xs text-fg-muted">Panel fotografa</p>
-            </div>
-          </Link>
-
-          <Link
-            to="/"
-            className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-          >
-            Wróć na stronę główną
-          </Link>
-        </div>
-      </header>
+      <PublicHeader
+        subtitle="Panel fotografa"
+        actions={[
+          {
+            label: "Wróć na stronę główną",
+            to: "/",
+            variant: "outline",
+          },
+        ]}
+      />
 
       <section className="px-6 py-10">
         <div className="mx-auto flex min-h-[calc(100vh-9rem)] max-w-6xl items-center justify-center">

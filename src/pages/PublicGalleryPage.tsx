@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { Button, EmptyState, Modal, Spinner } from "../components/ui";
+import { PublicHeader } from "../components/layout/PublicHeader";
 import { usePublicGalleryQuery } from "../features/portfolio/hooks";
 import type { GalleryPhoto } from "../features/portfolio/types";
 import { cn } from "../lib/utils/cn";
@@ -160,6 +161,19 @@ export function PublicGalleryPage() {
     Boolean(photo.image_url),
   );
 
+  const headerActions = [
+    {
+      label: "Mam kod sesji",
+      to: "/client",
+      variant: "outline" as const,
+    },
+    {
+      label: "Strona główna",
+      to: "/",
+      variant: "primary" as const,
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-bg text-fg">
       <a
@@ -169,51 +183,7 @@ export function PublicGalleryPage() {
         Przejdź do galerii
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
-              <span className="text-sm font-bold">FB</span>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold leading-none text-fg">
-                FotoBudka
-              </p>
-              <p className="mt-1 text-xs text-fg-muted">Publiczna galeria</p>
-            </div>
-          </Link>
-
-          <nav
-            aria-label="Nawigacja publicznej galerii"
-            className="flex flex-wrap gap-2"
-          >
-            {username ? (
-              <Link
-                to={`/${username}`}
-                className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-              >
-                Profil fotografa
-              </Link>
-            ) : null}
-
-            <Link
-              to="/client"
-              className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-            >
-              Mam kod sesji
-            </Link>
-
-            <Link
-              to="/"
-              className="rounded-button bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
-            >
-              Strona główna
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+      <PublicHeader subtitle="Publiczna galeria" actions={headerActions} />
       <section
         id="public-gallery-content"
         className="mx-auto max-w-7xl px-6 py-10"

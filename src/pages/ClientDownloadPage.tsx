@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "../components/ui";
 import { ClientDeliveryView } from "../features/client-delivery/components/ClientDeliveryView";
+import { PublicHeader } from "../components/layout/PublicHeader";
 import {
   readClientSession,
   storeClientSession,
@@ -49,41 +50,21 @@ export function ClientDownloadPage() {
         Przejdź do pobierania ZIP
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
-              <span className="text-sm font-bold">FB</span>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold leading-none text-fg">
-                FotoBudka
-              </p>
-              <p className="mt-1 text-xs text-fg-muted">Pobieranie zdjęć</p>
-            </div>
-          </Link>
-
-          <nav
-            aria-label="Nawigacja pobierania"
-            className="flex flex-wrap gap-2"
-          >
-            <Link
-              to="/client"
-              className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-            >
-              Mam inny kod
-            </Link>
-
-            <Link
-              to="/"
-              className="rounded-button bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
-            >
-              Strona główna
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader
+        subtitle="Pobieranie zdjęć"
+        actions={[
+          {
+            label: "Mam inny kod",
+            to: "/client",
+            variant: "outline",
+          },
+          {
+            label: "Strona główna",
+            to: "/",
+            variant: "primary",
+          },
+        ]}
+      />
 
       <section id="client-download-content" className="px-6 py-10">
         {!sessionId ? (

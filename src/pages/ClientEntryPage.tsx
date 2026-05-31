@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
+import { PublicHeader } from "../components/layout/PublicHeader";
 
 const clientSteps = [
   {
@@ -98,39 +99,21 @@ export function ClientEntryPage() {
         Przejdź do formularza kodu
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
-              <span className="text-sm font-bold">FB</span>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold leading-none text-fg">
-                FotoBudka
-              </p>
-              <p className="mt-1 text-xs text-fg-muted">Wejście klienta</p>
-            </div>
-          </Link>
-
-          <nav aria-label="Nawigacja klienta" className="flex flex-wrap gap-2">
-            <Link
-              to="/"
-              className="rounded-button border border-border bg-surface px-4 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-main-soft"
-            >
-              Strona główna
-            </Link>
-
-            <Link
-              to="/login"
-              className="rounded-button bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary-soft"
-            >
-              Panel fotografa
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+      <PublicHeader
+        subtitle="Wejście klienta"
+        actions={[
+          {
+            label: "Strona główna",
+            to: "/",
+            variant: "outline",
+          },
+          {
+            label: "Panel fotografa",
+            to: "/login",
+            variant: "primary",
+          },
+        ]}
+      />
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-[1fr_440px] lg:py-14">
         <div className="order-2 flex flex-col justify-center lg:order-1">
           <div className="inline-flex w-fit rounded-full bg-main-soft px-3 py-1 text-sm font-semibold text-fg">

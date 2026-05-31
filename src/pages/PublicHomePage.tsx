@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { Button, EmptyState, Spinner } from "../components/ui";
 import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
+import { PublicHeader } from "../components/layout/PublicHeader";
 import { useFeaturedPublicGalleriesQuery } from "../features/portfolio/hooks";
 import type { FeaturedPublicGallery } from "../features/portfolio/types";
 
@@ -259,50 +260,21 @@ export function PublicHomePage() {
         Przejdź do formularza kodu sesji
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-main text-main-foreground">
-              <span className="text-sm font-bold">FB</span>
-            </div>
-
-            <div>
-              <p className="text-sm font-bold leading-none text-fg">
-                FotoBudka
-              </p>
-              <p className="mt-1 text-xs text-fg-muted">
-                Selekcja zdjęć i portfolio
-              </p>
-            </div>
-          </Link>
-
-          <nav
-            aria-label="Główna nawigacja"
-            className="flex flex-wrap items-center gap-2"
-          >
-            <a
-              href="#client-access"
-              className="rounded-button bg-main-soft px-3 py-2 text-sm font-semibold text-fg transition hover:bg-main-subtle"
-            >
-              Mam kod
-            </a>
-
-            <a
-              href="#featured-galleries"
-              className="rounded-button border border-border bg-surface px-3 py-2 text-sm font-semibold text-fg transition hover:bg-bg-muted"
-            >
-              Galerie
-            </a>
-
-            <Link
-              to="/login"
-              className="rounded-button bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground transition hover:bg-secondary-hover"
-            >
-              Panel fotografa
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader
+        subtitle="Selekcja zdjęć i portfolio"
+        actions={[
+          {
+            label: "Mam kod",
+            href: "#client-access",
+            variant: "soft",
+          },
+          {
+            label: "Panel fotografa",
+            to: "/login",
+            variant: "primary",
+          },
+        ]}
+      />
 
       <section className="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-[1fr_440px] lg:py-16">
         <div className="order-2 flex flex-col justify-center lg:order-1">
