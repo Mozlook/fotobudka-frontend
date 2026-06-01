@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { Button, Input, Modal } from "../../../components/ui";
 import type { Gallery, UpsertGalleryInput } from "../types";
 

@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import { PublicHeader } from "../components/layout/PublicHeader";
 import { ClientAccessCard } from "../features/client-access/components/ClientAccessCard";
 
