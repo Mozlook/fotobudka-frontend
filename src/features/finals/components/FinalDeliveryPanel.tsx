@@ -240,7 +240,10 @@ export function FinalDeliveryPanel({
   const [generateConfirmOpen, setGenerateConfirmOpen] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
 
-  const photos = selectionQuery.data?.photos ?? [];
+  const photos = useMemo(
+    () => selectionQuery.data?.photos ?? [],
+    [selectionQuery.data],
+  );
 
   const canUploadFinals = isFinalUploadAllowed(sessionStatus);
 

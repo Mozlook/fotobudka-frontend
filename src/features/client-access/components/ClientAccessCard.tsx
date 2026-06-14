@@ -98,10 +98,13 @@ export function ClientAccessCard() {
   }
 
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-card">
-      <p className="text-sm font-semibold text-fg-soft">Wejście klienta</p>
+    <section className="rounded-card border border-border bg-surface p-6 shadow-card sm:p-7">
+      <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-main-active">
+        <span aria-hidden="true" className="h-px w-7 bg-main/50" />
+        Wejście klienta
+      </p>
 
-      <h2 className="mt-2 text-3xl font-bold tracking-tight text-fg">
+      <h2 className="mt-4 text-[1.75rem] font-semibold leading-tight text-fg">
         Wpisz kod od fotografa
       </h2>
 
@@ -117,6 +120,8 @@ export function ClientAccessCard() {
           value={code}
           autoComplete="off"
           inputMode="text"
+          inputSize="lg"
+          className="text-center text-lg font-semibold uppercase tracking-[0.35em] placeholder:tracking-[0.25em] placeholder:normal-case"
           onChange={(event) => setCode(event.target.value)}
         />
 
@@ -157,19 +162,29 @@ export function ClientAccessCard() {
         <Button
           type="submit"
           variant="secondary"
+          size="lg"
+          className="w-full"
           isLoading={accessMutation.isPending}
         >
           Wejdź do sesji
         </Button>
       </form>
 
-      <div className="mt-6 rounded-card border border-main/20 bg-main-subtle p-4">
-        <p className="text-sm font-semibold text-fg">Masz link do sesji?</p>
+      <div className="mt-6 flex items-start gap-3 rounded-card border border-main/20 bg-main-subtle p-4">
+        <span
+          aria-hidden="true"
+          className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-main-soft text-main-active"
+        >
+          🔗
+        </span>
+        <div>
+          <p className="text-sm font-semibold text-fg">Masz link do sesji?</p>
 
-        <p className="mt-1 text-sm leading-6 text-fg-muted">
-          Otwórz link z wiadomości od fotografa. Wtedy nie musisz przepisywać
-          kodu ręcznie.
-        </p>
+          <p className="mt-1 text-sm leading-6 text-fg-muted">
+            Otwórz link z wiadomości od fotografa. Wtedy nie musisz przepisywać
+            kodu ręcznie.
+          </p>
+        </div>
       </div>
     </section>
   );

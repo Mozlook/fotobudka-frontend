@@ -174,7 +174,10 @@ export function PublicPhotographerPage() {
 
   const [search, setSearch] = useState("");
 
-  const galleries = profileQuery.data?.galleries ?? [];
+  const galleries = useMemo(
+    () => profileQuery.data?.galleries ?? [],
+    [profileQuery.data],
+  );
 
   const stats = useMemo(() => {
     return {

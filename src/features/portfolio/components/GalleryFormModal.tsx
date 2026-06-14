@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { Button, Input, Modal } from "../../../components/ui";
 import type { Gallery, UpsertGalleryInput } from "../types";
 
@@ -44,17 +44,22 @@ export function GalleryFormModal({
     is_public: false,
   });
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
+  // Reset the form each time the modal opens for a (different) gallery, without
+  // an effect: adjust state during render and guard against re-running.
+  const [seedKey, setSeedKey] = useState<string | null>(null);
+  const activeKey = open ? (gallery?.id ?? "new") : null;
 
-    setForm({
-      title: gallery?.title ?? "",
-      slug: gallery?.slug ?? "",
-      is_public: gallery?.is_public ?? false,
-    });
-  }, [gallery, open]);
+  if (activeKey !== seedKey) {
+    setSeedKey(activeKey);
+
+    if (open) {
+      setForm({
+        title: gallery?.title ?? "",
+        slug: gallery?.slug ?? "",
+        is_public: gallery?.is_public ?? false,
+      });
+    }
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

@@ -271,25 +271,8 @@ export function ClientSelectionView({ session }: ClientSelectionViewProps) {
 
   const hasMinimumSelection = selectedCount >= session.min_select_count;
 
-  useEffect(() => {
-    setDraft((current) => {
-      let changed = false;
-      const next = { ...current };
-
-      for (const photo of photos) {
-        if (!next[photo.id]) {
-          next[photo.id] = {
-            selected: photo.selected,
-            note: photo.note,
-          };
-
-          changed = true;
-        }
-      }
-
-      return changed ? next : current;
-    });
-  }, [photos]);
+  // Draft entries are read lazily through getDraftForPhoto(), which falls back
+  // to each photo's own selected/note. No effect is needed to pre-seed the draft.
 
   useEffect(() => {
     return () => {

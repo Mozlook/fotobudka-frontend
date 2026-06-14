@@ -184,7 +184,10 @@ export function PortfolioPage() {
   const username = meQuery.data?.profile?.username;
   const profileReady = Boolean(username);
 
-  const galleries = galleriesQuery.data ?? [];
+  const galleries = useMemo(
+    () => galleriesQuery.data ?? [],
+    [galleriesQuery.data],
+  );
 
   const stats = useMemo(() => {
     const publicCount = galleries.filter((gallery) => gallery.is_public).length;

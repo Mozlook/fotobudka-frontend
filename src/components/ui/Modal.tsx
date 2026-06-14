@@ -69,7 +69,7 @@ export function Modal({
       <button
         type="button"
         aria-label="Zamknij modal"
-        className="absolute inset-0 cursor-default bg-fg/45 backdrop-blur-sm"
+        className="fb-fade absolute inset-0 cursor-default bg-secondary/40 backdrop-blur-sm"
         onClick={() => {
           if (closeOnOverlayClick) {
             onOpenChange(false);
@@ -83,7 +83,7 @@ export function Modal({
         aria-labelledby={title ? titleId : undefined}
         aria-describedby={description ? descriptionId : undefined}
         className={cn(
-          "relative z-10 w-full rounded-card border border-border bg-surface shadow-card",
+          "fb-pop relative z-10 w-full rounded-card border border-border bg-surface shadow-card",
           "max-h-[calc(100dvh-2rem)] overflow-hidden",
           modalSizes[size],
           className,

@@ -55,18 +55,23 @@ export function AppShell() {
         Przejdź do treści panelu
       </a>
 
-      <aside className="hidden border-r border-border bg-surface lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-80 lg:flex-col">
+      <aside className="hidden border-r border-border bg-surface/80 backdrop-blur-sm lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-80 lg:flex-col">
         <div className="border-b border-border p-6">
-          <Link to="/app/sessions" className="flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-full bg-main text-main-foreground">
-              <span className="text-sm font-bold">FB</span>
-            </div>
+          <Link to="/app/sessions" className="group flex items-center gap-3">
+            <span className="relative flex size-11 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground shadow-card-sm transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-3">
+              <span className="font-display text-lg font-semibold leading-none">
+                F
+              </span>
+              <span className="absolute -right-1 -top-1 size-3 rounded-full bg-main ring-2 ring-surface" />
+            </span>
 
             <div>
-              <p className="text-base font-bold leading-none text-fg">
+              <p className="font-display text-lg font-semibold leading-none tracking-tight text-fg">
                 FotoBudka
               </p>
-              <p className="mt-1 text-xs text-fg-muted">Panel fotografa</p>
+              <p className="mt-1.5 text-xs font-medium uppercase tracking-[0.18em] text-fg-soft">
+                Panel fotografa
+              </p>
             </div>
           </Link>
 
@@ -194,7 +199,10 @@ export function AppShell() {
         <header className="sticky top-0 z-40 border-b border-border bg-surface/90 px-6 py-4 backdrop-blur lg:hidden">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <Link to="/app/sessions" className="font-bold text-fg">
+              <Link
+                to="/app/sessions"
+                className="font-display text-lg font-semibold text-fg"
+              >
                 FotoBudka
               </Link>
 

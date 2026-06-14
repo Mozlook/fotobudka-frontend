@@ -77,11 +77,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-describedby={describedBy || undefined}
             className={cn(
               "w-full rounded-input border bg-surface text-fg shadow-sm outline-none transition",
-              "placeholder:text-fg-soft",
-              "focus:border-main focus:ring-4 focus:ring-main-soft",
+              "placeholder:text-fg-soft hover:border-border-strong",
+              "focus:border-main focus:ring-4 focus:ring-main/15",
               "disabled:cursor-not-allowed disabled:bg-bg-muted disabled:text-fg-soft",
               hasError
-                ? "border-danger focus:border-danger focus:ring-danger-soft"
+                ? "border-danger focus:border-danger focus:ring-danger/15"
                 : "border-border",
               inputSizes[inputSize],
               leftElement && "pl-10",

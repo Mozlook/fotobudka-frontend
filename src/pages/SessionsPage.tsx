@@ -134,7 +134,7 @@ export function SessionsPage() {
   const [createdAccess, setCreatedAccess] =
     useState<CreateSessionResult | null>(null);
 
-  const sessions = sessionsQuery.data ?? [];
+  const sessions = useMemo(() => sessionsQuery.data ?? [], [sessionsQuery.data]);
 
   const filterCounts = useMemo(() => {
     const counts: Record<string, number> = {

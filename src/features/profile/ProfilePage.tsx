@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
 import { Button, Input, Spinner, Textarea } from "../../components/ui";
@@ -137,10 +137,12 @@ export function ProfilePage() {
 
   const profileStatus = profile ? "Uzupełniony" : "Nieutworzony";
 
-  useEffect(() => {
-    if (!profile) {
-      return;
-    }
+  // Seed the form from the loaded profile without an effect: adjust state
+  // during render when the profile reference changes, guarded against loops.
+  const [seededProfile, setSeededProfile] = useState(profile);
+
+  if (profile && profile !== seededProfile) {
+    setSeededProfile(profile);
 
     setForm({
       username: profile.username ?? "",
@@ -152,7 +154,7 @@ export function ProfilePage() {
       facebook: profile.social_links?.facebook ?? "",
       behance: profile.social_links?.behance ?? "",
     });
-  }, [profile]);
+  }
 
   function updateField<K extends keyof ProfileFormState>(
     field: K,
